@@ -70,14 +70,32 @@ export default Ember.Component.extend({
     this[targetAttachmentMethod](targetAttachmentElement);
   },
 
-  alignCenter() {
+  alignCenter(targetAttachmentElement) {
     const elementWidth = this.$().outerWidth();
     const elementHeight = this.$().outerHeight();
 
+    const widthOffset = elementWidth * -0.5;
+    const heightOffset = elementHeight * -0.5;
+
+    const constrainTo = this.get('constrainTo');
+    if(constrainTo) {
+      const constrainElement = Ember.$(constrainTo);
+      Ember.assert(`Constrain Element ${constraintTo} not found in DOM.`, constrainElement.length > 0);
+      const constrainedWidth = constrainElement.width();
+      const constrainedHeight = constrainElement.height();
+
+      if(elementWidth > constrainedWidth) {
+        widthOffset = constrainedWidth / 2;
+      }
+      if(elementHeight > constrainedHeight) {
+        heightOffset = constrainedHeight / 2;
+      }
+    }
+
     this.$().css('left', '50%')
       .css('top', '50%')
-      .css('margin-left', elementWidth * -0.5)
-      .css('margin-top', elementHeight * -0.5);
+      .css('margin-left', widthOffset)
+      .css('margin-top', heightOffset);
   },
 
   alignLeft(targetAttachmentElement) {
